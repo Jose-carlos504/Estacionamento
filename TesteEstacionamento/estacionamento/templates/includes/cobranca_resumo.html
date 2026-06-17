@@ -1,0 +1,36 @@
+{% if cobranca and movimentacao %}
+<div class="cobranca-resumo">
+    <h3>Resumo da cobrança</h3>
+    <p class="cobranca-placa">Placa <strong>{{ movimentacao.placa }}</strong> — {{ movimentacao.estacionamento.nome }}</p>
+    <dl>
+        <dt>Tempo total</dt>
+        <dd>{{ cobranca.tempo_total_minutos|floatformat:2 }} min</dd>
+        <dt>Tempo cobrado</dt>
+        <dd>
+            {% if cobranca.tempo_cobrado == 0 %}
+                —
+            {% else %}
+                {{ cobranca.tempo_cobrado }} {{ cobranca.unidade_cobranca }}{% if cobranca.tempo_cobrado > 1 %}s{% endif %}
+            {% endif %}
+        </dd>
+        <dt>Valor base</dt>
+        <dd>R$ {{ cobranca.valor_base }}</dd>
+        {% if cobranca.multa and cobranca.multa > 0 %}
+        <dt>Multa (50% excedente)</dt>
+        <dd>R$ {{ cobranca.multa }}</dd>
+        {% endif %}
+        {% if cobranca.tempo_pago_minutos %}
+        <dt>Tempo pago antecipado</dt>
+        <dd>{{ cobranca.tempo_pago_minutos }} min</dd>
+        <dt>Excedente</dt>
+        <dd>{{ cobranca.tempo_excedente_minutos|floatformat:2 }} min</dd>
+        {% endif %}
+        <dt class="total">Valor final</dt>
+        <dd class="total">R$ {{ cobranca.valor_final }}</dd>
+    </dl>
+    <p class="cobranca-regra">
+        Tolerância: {{ cobranca.dentro_tolerancia|yesno:"aplicada (até 10 min grátis),não aplicada" }}.
+        Tarifa: R$ {{ movimentacao.estacionamento.valor }}/{{ movimentacao.estacionamento.tipo_cobranca_label|lower }}.
+    </p>
+</div>
+{% endif %}

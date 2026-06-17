@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>ParkEasy - Gerenciar Usuários</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body{
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d1229 100%);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before{
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(99, 130, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(138, 100, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(79, 172, 254, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-container{
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar{
+            width: 280px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo{
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 48px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon{
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-links{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-link{
+            text-decoration: none;
+            padding: 14px 20px;
+            color: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link:hover{
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active{
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.2) 0%, rgba(138, 100, 255, 0.2) 100%);
+            color: white;
+            border: 1px solid rgba(99, 130, 255, 0.3);
+        }
+
+        .account-card{
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.15) 0%, rgba(138, 100, 255, 0.15) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: auto;
+        }
+
+        .account-card h3{
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .account-card p{
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .account-card p strong{
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .account-btn{
+            display: block;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .account-btn:last-child{
+            margin-bottom: 0;
+        }
+
+        .account-btn-primary{
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            color: white;
+        }
+
+        .account-btn-primary:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 130, 255, 0.4);
+        }
+
+        .account-btn-secondary{
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .account-btn-secondary:hover{
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .account-btn-logout{
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        .account-btn-logout:hover{
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        .main-content{
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+        }
+
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1{
+            color: white;
+            font-weight: 700;
+            font-size: 36px;
+            letter-spacing: -1px;
+        }
+
+        .header p{
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        .section{
+            margin-bottom: 40px;
+        }
+
+        .section-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2{
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .form-card{
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .form-card h3{
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .form-row{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        label{
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        input, select{
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus{
+            outline: none;
+            border-color: rgba(99, 130, 255, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(99, 130, 255, 0.1);
+        }
+
+        select option{
+            background: #1a1f3a;
+            color: white;
+        }
+
+        button{
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        button:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 130, 255, 0.4);
+        }
+
+        .error{
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .table-container{
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th{
+            text-align: left;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        td{
+            color: white;
+            font-size: 14px;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tr:last-child td{
+            border-bottom: none;
+        }
+
+        .role-badge{
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .role-admin{
+            background: rgba(99, 130, 255, 0.2);
+            color: #6382ff;
+        }
+
+        .role-gestor{
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .role-cliente{
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px){
+            .sidebar{
+                display: none;
+            }
+            .main-content{
+                margin-left: 0;
+                padding: 24px;
+            }
+            .form-row{
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">P</div>
+                ParkEasy
+            </div>
+            
+            <nav class="nav-links">
+                <a href="{% url 'painel' %}" class="nav-link">
+                    <span>📊</span>
+                    Dashboard
+                </a>
+                <a href="{% url 'configurar_vagas' %}" class="nav-link">
+                    <span>⚙️</span>
+                    Configurar
+                </a>
+                <a href="{% url 'gerenciar_usuarios' %}" class="nav-link active">
+                    <span>👥</span>
+                    Usuários
+                </a>
+                <a href="{% url 'home' %}" class="nav-link">
+                    <span>🏠</span>
+                    Sistema
+                </a>
+            </nav>
+
+            <div class="account-card">
+                <h3>Área Administrativa</h3>
+                <p>Logado como <strong>{{ user.username }}</strong> ({{ user.profile.get_role_display }})</p>
+                <a href="{% url 'logout' %}" class="account-btn account-btn-logout">Sair</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <div>
+                    <h1>Gerenciar Usuários</h1>
+                    <p>Crie e gerencie usuários do sistema</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="form-card">
+                    <h3>Criar Novo Usuário</h3>
+                    {% if error %}
+                    <div class="error">{{ error }}</div>
+                    {% endif %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="acao" value="criar_usuario">
+                        
+                        <div class="form-row">
+                            <div>
+                                <label for="username">Usuário</label>
+                                <input type="text" id="username" name="username" required>
+                            </div>
+                            <div>
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div>
+                                <label for="password">Senha</label>
+                                <input type="password" id="password" name="password" required>
+                            </div>
+                            <div>
+                                <label for="role">Função</label>
+                                <select id="role" name="role" required>
+                                    <option value="cliente">Cliente</option>
+                                    <option value="gestor">Gestor</option>
+                                    <option value="admin">Administrador</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit">Criar Usuário</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Usuários Cadastrados</h2>
+                </div>
+
+                <div class="table-container">
+                    {% if usuarios %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Email</th>
+                                <th>Função</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in usuarios %}
+                            <tr>
+                                <td>{{ u.username }}</td>
+                                <td>{{ u.email }}</td>
+                                <td>
+                                    {% if u.profile.role == 'admin' %}
+                                    <span class="role-badge role-admin">Administrador</span>
+                                    {% elif u.profile.role == 'gestor' %}
+                                    <span class="role-badge role-gestor">Gestor</span>
+                                    {% else %}
+                                    <span class="role-badge role-cliente">Cliente</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if u.id != user.id %}
+                                    <form method="POST" style="display:inline;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="acao" value="alterar_role">
+                                        <input type="hidden" name="user_id" value="{{ u.id }}">
+                                        <select name="role" onchange="this.form.submit()" style="padding: 6px 12px; font-size: 12px; width: auto;">
+                                            <option value="cliente" {% if u.profile.role == 'cliente' %}selected{% endif %}>Cliente</option>
+                                            <option value="gestor" {% if u.profile.role == 'gestor' %}selected{% endif %}>Gestor</option>
+                                            <option value="admin" {% if u.profile.role == 'admin' %}selected{% endif %}>Admin</option>
+                                        </select>
+                                    </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p style="color: rgba(255,255,255,0.6);">Nenhum usuário cadastrado.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

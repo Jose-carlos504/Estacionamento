@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>ParkEasy - Relatórios do Sistema</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body{
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d1229 100%);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before{
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(99, 130, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(138, 100, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(79, 172, 254, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-container{
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar{
+            width: 280px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo{
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 48px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon{
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-links{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-link{
+            text-decoration: none;
+            padding: 14px 20px;
+            color: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link:hover{
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active{
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.2) 0%, rgba(138, 100, 255, 0.2) 100%);
+            color: white;
+            border: 1px solid rgba(99, 130, 255, 0.3);
+        }
+
+        .account-card{
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.15) 0%, rgba(138, 100, 255, 0.15) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: auto;
+        }
+
+        .account-card h3{
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .account-card p{
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .account-card p strong{
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .account-btn{
+            display: block;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .account-btn:last-child{
+            margin-bottom: 0;
+        }
+
+        .account-btn-primary{
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            color: white;
+        }
+
+        .account-btn-primary:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 130, 255, 0.4);
+        }
+
+        .account-btn-secondary{
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .account-btn-secondary:hover{
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .account-btn-logout{
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        .account-btn-logout:hover{
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        .main-content{
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+        }
+
+        .header{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .header h1{
+            color: white;
+            font-weight: 700;
+            font-size: 36px;
+            letter-spacing: -1px;
+        }
+
+        .header p{
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        .filters{
+            display: flex;
+            align-items: end;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .field{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field label{
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .field select,
+        .field input{
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: white;
+            border-radius: 10px;
+            padding: 11px 12px;
+            min-height: 42px;
+            font-size: 14px;
+        }
+
+        .field option{
+            color: #0d1229;
+        }
+
+        .btn{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 10px 18px;
+            border: 0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary{
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            color: white;
+        }
+
+        .btn-primary:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 130, 255, 0.4);
+        }
+
+        .stats-grid{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card{
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before,
+        .table-container::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .stat-card .icon{
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.2) 0%, rgba(138, 100, 255, 0.2) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card h3{
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value{
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .section{
+            margin-bottom: 40px;
+        }
+
+        .section-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .section-header h2{
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .period-badge{
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.2) 0%, rgba(138, 100, 255, 0.2) 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid rgba(99, 130, 255, 0.3);
+            white-space: nowrap;
+        }
+
+        .table-container{
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 24px;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th{
+            text-align: left;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        td{
+            color: white;
+            font-size: 14px;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: top;
+        }
+
+        tr:last-child td{
+            border-bottom: none;
+        }
+
+        .muted{
+            color: rgba(255, 255, 255, 0.55);
+        }
+
+        .status{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 118px;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-active{
+            background: rgba(99, 130, 255, 0.18);
+            color: #9aafff;
+        }
+
+        .status-paid{
+            background: rgba(76, 175, 80, 0.18);
+            color: #7fe083;
+        }
+
+        .status-cancelled{
+            background: rgba(255, 107, 107, 0.18);
+            color: #ff8c8c;
+        }
+
+        @media (max-width: 1200px){
+            .stats-grid{
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header{
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px){
+            .sidebar{
+                display: none;
+            }
+
+            .main-content{
+                margin-left: 0;
+                padding: 24px;
+            }
+
+            .filters{
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .stats-grid{
+                grid-template-columns: 1fr;
+            }
+
+            .section-header{
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">P</div>
+                ParkEasy
+            </div>
+
+            <nav class="nav-links">
+                <a href="{% url 'painel' %}" class="nav-link">
+                    <span>📊</span>
+                    Dashboard
+                </a>
+                <a href="{% url 'relatorios' %}" class="nav-link active">
+                    <span>📈</span>
+                    Relatórios
+                </a>
+                <a href="{% url 'configurar_vagas' %}" class="nav-link">
+                    <span>⚙️</span>
+                    Configurar
+                </a>
+                {% if user.profile.can_manage_users %}
+                <a href="{% url 'gerenciar_usuarios' %}" class="nav-link">
+                    <span>👥</span>
+                    Usuários
+                </a>
+                {% endif %}
+                <a href="{% url 'home' %}" class="nav-link">
+                    <span>🏠</span>
+                    Sistema
+                </a>
+            </nav>
+
+            <div class="account-card">
+                <h3>Área Administrativa</h3>
+                <p>Logado como <strong>{{ user.username }}</strong> ({{ user.profile.get_role_display }})</p>
+                <a href="{% url 'logout' %}" class="account-btn account-btn-logout">Sair</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="header">
+                <div>
+                    <h1>Relatórios do Sistema</h1>
+                    <p>Entradas, recebimentos e permanência dos veículos</p>
+                </div>
+
+                <form method="get" class="filters">
+                    <div class="field">
+                        <label for="periodo">Período</label>
+                        <select name="periodo" id="periodo">
+                            {% for item in periodos %}
+                            <option value="{{ item.valor }}" {% if periodo == item.valor %}selected{% endif %}>{{ item.rotulo }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="data">Data base</label>
+                        <input type="date" name="data" id="data" value="{{ data_base|date:'Y-m-d' }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </form>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon">🚗</div>
+                    <h3>Entradas no período</h3>
+                    <div class="value">{{ total_entradas }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">💰</div>
+                    <h3>Recebido no período</h3>
+                    <div class="value">R$ {{ total_recebido|floatformat:2 }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">⛔</div>
+                    <h3>Canceladas/Sem cobrança</h3>
+                    <div class="value">{{ total_canceladas }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">🅿️</div>
+                    <h3>Veículos ativos agora</h3>
+                    <div class="value">{{ veiculos_ativos }}</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Total arrecadado por estacionamento</h2>
+                    <span class="period-badge">{{ periodo_label }}</span>
+                </div>
+
+                <div class="table-container">
+                    {% if resumo_estacionamentos %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estacionamento</th>
+                                <th>Entradas</th>
+                                <th>Canceladas/Sem cobrança</th>
+                                <th>Total arrecadado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in resumo_estacionamentos %}
+                            <tr>
+                                <td>{{ item.estacionamento.nome }}</td>
+                                <td>{{ item.entradas }}</td>
+                                <td>{{ item.canceladas }}</td>
+                                <td>R$ {{ item.recebido|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="muted">Nenhum estacionamento ativo cadastrado.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Movimentações do período</h2>
+                    <span class="period-badge">{{ periodo_label }}</span>
+                </div>
+
+                <div class="table-container">
+                    {% if movimentacoes %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Placa</th>
+                                <th>Estacionamento</th>
+                                <th>Entrada</th>
+                                <th>Saída</th>
+                                <th>Permanência</th>
+                                <th>Valor pago</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mov in movimentacoes %}
+                            <tr>
+                                <td>{{ mov.placa }}</td>
+                                <td>{{ mov.vaga.estacionamento.nome }}</td>
+                                <td>{{ mov.horario_entrada|date:"d/m/Y H:i" }}</td>
+                                <td>
+                                    {% if mov.horario_saida %}
+                                    {{ mov.horario_saida|date:"d/m/Y H:i" }}
+                                    {% else %}
+                                    <span class="muted">Em andamento</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if mov.tempo_total_minutos %}
+                                    {{ mov.tempo_total_minutos|floatformat:0 }} min
+                                    {% else %}
+                                    <span class="muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if mov.valor_pago != None %}
+                                    R$ {{ mov.valor_pago|floatformat:2 }}
+                                    {% else %}
+                                    <span class="muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if mov.ativa %}
+                                    <span class="status status-active">Em andamento</span>
+                                    {% elif mov.valor_pago == None %}
+                                    <span class="status status-cancelled">Sem cobrança</span>
+                                    {% else %}
+                                    <span class="status status-paid">Pago</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="muted">Nenhuma movimentação encontrada para este período.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

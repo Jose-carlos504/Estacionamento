@@ -1,0 +1,16 @@
+<div class="account-card">
+    {% if user.is_authenticated and user.profile.can_manage_parking %}
+        <h3>Área Administrativa</h3>
+        <p>Logado como <strong>{{ user.username }}</strong> ({{ user.profile.get_role_display }})</p>
+        <a href="{% url 'painel' %}" class="account-btn account-btn-primary">Painel</a>
+        <a href="{% url 'relatorios' %}" class="account-btn account-btn-secondary">Relatórios</a>
+        {% if user.profile.can_manage_users %}
+        <a href="{% url 'gerenciar_usuarios' %}" class="account-btn account-btn-secondary">Gerenciar Usuários</a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="account-btn account-btn-logout">Sair</a>
+    {% else %}
+        <h3>Área Administrativa</h3>
+        <p>Acesso restrito para gestores e administradores.</p>
+        <a href="{% url 'login' %}" class="account-btn account-btn-primary">Acesso Admin</a>
+    {% endif %}
+</div>

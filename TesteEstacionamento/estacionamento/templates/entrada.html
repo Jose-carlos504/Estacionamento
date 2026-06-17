@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>ParkEasy - Entrada de Veículo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body{
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d1229 100%);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before{
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(99, 130, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(138, 100, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(79, 172, 254, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-container{
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar{
+            width: 280px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo{
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 48px;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon{
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .nav-links{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-link{
+            text-decoration: none;
+            padding: 14px 20px;
+            color: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link:hover{
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link.active{
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.2) 0%, rgba(138, 100, 255, 0.2) 100%);
+            color: white;
+            border: 1px solid rgba(99, 130, 255, 0.3);
+        }
+
+        .account-card{
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.15) 0%, rgba(138, 100, 255, 0.15) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: auto;
+        }
+
+        .account-card h3{
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .account-card p{
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .account-card p strong{
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .account-btn{
+            display: block;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+        }
+
+        .account-btn:last-child{
+            margin-bottom: 0;
+        }
+
+        .account-btn-primary{
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            color: white;
+        }
+
+        .account-btn-primary:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 130, 255, 0.4);
+        }
+
+        .account-btn-secondary{
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .account-btn-secondary:hover{
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .account-btn-logout{
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        .account-btn-logout:hover{
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        .main-content{
+            flex: 1;
+            margin-left: 280px;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-card{
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 48px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .form-header{
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-header .icon{
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, rgba(99, 130, 255, 0.2) 0%, rgba(138, 100, 255, 0.2) 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+        }
+
+        .form-header h1{
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .form-header p{
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 15px;
+        }
+
+        label{
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        input, select{
+            width: 100%;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder{
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        input:focus, select:focus{
+            outline: none;
+            border-color: rgba(99, 130, 255, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 4px rgba(99, 130, 255, 0.1);
+        }
+
+        select option{
+            background: #1a1f3a;
+            color: white;
+        }
+
+        button{
+            background: linear-gradient(135deg, #6382ff 0%, #8a64ff 100%);
+            color: white;
+            border: none;
+            padding: 18px 24px;
+            width: 100%;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        button:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 130, 255, 0.4);
+        }
+
+        .errorlist{
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: -12px;
+            margin-bottom: 20px;
+            list-style: none;
+        }
+
+        .errorlist li{
+            padding: 8px 12px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .back-link{
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .back-link a{
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link a:hover{
+            color: white;
+        }
+
+        @media (max-width: 768px){
+            .sidebar{
+                display: none;
+            }
+            .main-content{
+                margin-left: 0;
+                padding: 24px;
+            }
+            .form-card{
+                padding: 32px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">P</div>
+                ParkEasy
+            </div>
+            
+            <nav class="nav-links">
+                <a href="/" class="nav-link">
+                    <span>🏠</span>
+                    Início
+                </a>
+                <a href="/entrada/" class="nav-link active">
+                    <span>🚗</span>
+                    Entrada
+                </a>
+                <a href="/saida/" class="nav-link">
+                    <span>🚙</span>
+                    Saída
+                </a>
+                {% if user.is_authenticated and user.profile.can_manage_parking %}
+                <a href="/configurar/" class="nav-link">
+                    <span>⚙️</span>
+                    Configurar
+                </a>
+                {% endif %}
+            </nav>
+
+            {% include 'includes/auth_sidebar.html' %}
+        </aside>
+
+        <main class="main-content">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="icon">🚗</div>
+                    <h1>Entrada de Veículo</h1>
+                    {% if estacionamento %}
+                    <p>{{ estacionamento.nome }} — R$ {{ estacionamento.valor }} ({{ estacionamento.tipo_cobranca_label }})</p>
+                    {% endif %}
+                </div>
+
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit">
+                        Registrar Entrada
+                    </button>
+                </form>
+
+                <div class="back-link">
+                    <a href="/">← Voltar para o início</a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
